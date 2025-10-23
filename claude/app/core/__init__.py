@@ -1,1 +1,0 @@
-"""ArtNex Core Module"""
