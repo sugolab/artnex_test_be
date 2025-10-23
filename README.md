@@ -87,10 +87,3 @@ ArtNex는 제조 기업의 마케팅 프로세스를 AI로 자동화하는 SaaS 
 ## 라이선스 (License)
 
 MIT License. 자세한 내용은 [LICENSE](LICENSE) 파일 참조.
-
-## 연락처
-
-- 개발자: [yourusername](https://github.com/yourusername)
-- 이메일: example@artnex.com
-
-ArtNex는 제조업의 AI 기반 마케팅 혁신을 목표로 합니다. 추가 질문은 이슈로 등록하세요!
