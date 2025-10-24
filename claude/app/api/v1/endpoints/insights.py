@@ -15,6 +15,7 @@ from app.schemas.insight import (
     BrandInsightListResponse
 )
 from app.services.gpt_service import GPTService
+from app.services.keyword_clustering_service import KeywordClusteringService
 import json
 
 router = APIRouter()
@@ -76,10 +77,18 @@ async def create_brand_insight(
         return insight
 
     elif insight_data.insight_type == InsightType.KEYWORD_CLUSTERING:
-        # 키워드 클러스터링 분석
+        # 키워드 생성
         keywords = await gpt_service.generate_keywords(
             prompt=insight_data.prompt,
             num_keywords=20
+        )
+
+        # 키워드 클러스터링 (Back2 Day 2 - scipy)
+        clustering_service = KeywordClusteringService()
+        clustering_result = clustering_service.cluster_keywords(
+            keywords=keywords,
+            num_clusters=min(5, len(keywords) // 3),
+            method="kmeans"
         )
 
         insight = BrandInsight(
@@ -87,9 +96,12 @@ async def create_brand_insight(
             brand_id=insight_data.brand_id,
             prompt=insight_data.prompt,
             insight_type=insight_data.insight_type,
-            analysis_summary=f"{len(keywords)}개의 키워드 클러스터 생성",
+            analysis_summary=f"{clustering_result.get('num_clusters', 0)}개 클러스터, {len(keywords)}개 키워드 분석",
             keywords=keywords,
-            market_data={"total_keywords": len(keywords)}
+            market_data={
+                "total_keywords": len(keywords),
+                "clustering": clustering_result
+            }
         )
 
         db.add(insight)
